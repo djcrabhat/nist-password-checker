@@ -33,11 +33,7 @@ func hashPassword(plaintext string) string {
 }
 
 func setupRouter(gopwnedClient *gopwned.Client, passwords BannedPasswordsList) *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-	r := gin.Default()
-
-	// gin middleware, which I'm not sure we need
+	r := gin.New()
 	r.Use(logger.SetLogger())
 
 	// Ping test
@@ -52,7 +48,7 @@ func setupRouter(gopwnedClient *gopwned.Client, passwords BannedPasswordsList) *
 			return
 		} else {
 			// validate password
-			validatePassword(c, password.Password, gopwnedClient, passwords)
+			ValidatePassword(c, password.Password, gopwnedClient, passwords)
 			return
 		}
 	})
@@ -63,7 +59,7 @@ func setupRouter(gopwnedClient *gopwned.Client, passwords BannedPasswordsList) *
 			return
 		} else {
 			// validate password
-			validatePasswordHashedSha1(c, password.Hash, gopwnedClient)
+			ValidatePasswordHashedSha1(c, password.Hash, gopwnedClient)
 			return
 		}
 	})

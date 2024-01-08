@@ -1,26 +1,18 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	gopwned "github.com/mavjs/goPwned"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"unicode/utf8"
 )
 
-type PasswordDecisionResponse struct {
-	Acceptable bool   `json:"acceptable"`
-	Reason     string `json:"reason,omitempty"`
-	Error      string `json:"error,omitempty"`
-}
-
-func validatePassword(c *gin.Context, password string, gopwnedClient *gopwned.Client, bannedPasswords BannedPasswordsList) {
+func ValidatePassword(c *gin.Context, password string, gopwnedClient *gopwned.Client, bannedPasswords BannedPasswordsList) {
 
 	// TODO: "To make allowances for likely mistyping, verifiers MAY replace multiple consecutive space characters with a single space character prior to verification, provided that the result is at least 8 characters in length."
 
@@ -29,35 +21,26 @@ func validatePassword(c *gin.Context, password string, gopwnedClient *gopwned.Cl
 	log.Trace().Str("password length", strconv.Itoa(passwordLength)).Msg("password length check")
 
 	if passwordLength < MinPasswordLength {
-		c.JSON(http.StatusOK, PasswordDecisionResponse{
-			Acceptable: false,
-			Reason:     "password too short",
-		})
+		c.JSON(http.StatusOK, DecideBadTooSort())
 		return
 	}
 	if passwordLength > MaxPasswordLength {
-		c.JSON(http.StatusOK, PasswordDecisionResponse{
-			Acceptable: false,
-			Reason:     "password is too long"})
+		c.JSON(http.StatusOK, DecideBadTooLong())
 		return
 	}
 
 	// "Repetitive or sequential characters (e.g. ‘aaaaaa’, ‘1234abcd’)."
 	if repeatsChar(password) || sequentialChars(password) {
-		c.JSON(http.StatusOK, PasswordDecisionResponse{
-			Acceptable: false,
-			Reason:     "Contains repetitive or sequential characters (e.g. ‘aaaaaa’, ‘1234abcd’)"})
+		c.JSON(http.StatusOK, DecideBadRepeat())
 		return
 	}
 
 	// "When processing requests to establish and change memorized secrets, verifiers SHALL compare the prospective
-	// secrets against a list that contains values known to be commonly-used, expected, or compromised.
+	// secrets against a list that contains values known to be commonly-used, expected, or compromised."
 
 	// first, our own in-memory list of disallowed passwords
 	if bannedPasswords.Contains(password) {
-		c.JSON(http.StatusOK, PasswordDecisionResponse{
-			Acceptable: false,
-			Reason:     "Password disallowed"})
+		c.JSON(http.StatusOK, DecideBannedList())
 		return
 	}
 
@@ -67,22 +50,18 @@ func validatePassword(c *gin.Context, password string, gopwnedClient *gopwned.Cl
 	fails, times := appearsInHIBP(gopwnedClient, pwdhash)
 	if fails {
 		if times == -1 {
-			c.JSON(http.StatusInternalServerError, PasswordDecisionResponse{
-				Acceptable: false,
-				Error:      "Cannot determine compromise status, please try again"})
+			c.JSON(http.StatusInternalServerError, DecideError("Failed to consult compromise database, unable to issue result, please try again"))
 			return
 		}
-		c.JSON(http.StatusOK, PasswordDecisionResponse{
-			Acceptable: false,
-			Reason:     fmt.Sprintf("appears in a list of compromised passwords %d times", times)})
+		c.JSON(http.StatusOK, DecideBadOnCompromisedList(times))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"acceptable": true})
+	c.JSON(http.StatusOK, DecideOk())
 	return
 }
 
-func validatePasswordHashedSha1(c *gin.Context, pwdhash string, gopwnedClient *gopwned.Client) {
+func ValidatePasswordHashedSha1(c *gin.Context, pwdhash string, gopwnedClient *gopwned.Client) {
 	// for a hashed password, all we can really do is check it in HIBP
 
 	// make sure it looks like 40 hex digits
@@ -151,42 +130,4 @@ func appearsInHIBP(client *gopwned.Client, pwdhash string) (bool, int64) {
 	}
 
 	return false, 0
-}
-
-type BannedPasswordsList struct {
-	Passwords map[string]bool
-}
-
-func NewBannedPasswordsList(path string) BannedPasswordsList {
-	set := make(map[string]bool)
-	// load set from list
-	readFile, err := os.Open(path)
-
-	if err != nil {
-		log.Warn().Err(err).Msg("Cannot load ban list at " + path)
-	} else {
-		fileScanner := bufio.NewScanner(readFile)
-
-		fileScanner.Split(bufio.ScanLines)
-
-		for fileScanner.Scan() {
-			set[fileScanner.Text()] = true
-		}
-
-		readFile.Close()
-		log.Debug().Int("banned_passwords", len(set)).Msg("Loaded banned passwords")
-	}
-
-	return BannedPasswordsList{
-		Passwords: set,
-	}
-}
-
-func (p BannedPasswordsList) Contains(password string) bool {
-	_, ok := p.Passwords[password]
-	return ok
-}
-
-func (p BannedPasswordsList) Add(password string) {
-	p.Passwords[password] = true
 }

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/mavjs/goPwned"
+	gopwned "github.com/mavjs/goPwned"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"net/http"

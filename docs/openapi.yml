@@ -1,0 +1,32 @@
+openapi: 3.0.3
+info:
+  title: NIST Password Checker
+  description: |-
+  license:
+    name: MIT License
+    url: https://choosealicense.com/licenses/mit/
+  version: 1.0.0
+servers:
+  - url: htts://localhost:8080/
+tags:
+  - name: system
+    description: Endpoints related to the operation of the system
+  - name: password
+    description: Operations about passwords
+paths:
+  /health:
+    get:
+      tags:
+        - system
+      summary: Health of the system
+      operationId: health
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+        '500':
+          description: Service is not ready yet

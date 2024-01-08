@@ -1,10 +1,9 @@
 name: Go
 
-on: [push]
+on: [ push ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,10 +23,17 @@ jobs:
           go get .
       - name: Build
         run: go build -v ./
-      - name: Test
-        run: go test -json > TestResults-${{ matrix.go-version }}.json
-      - name: Upload Go test results
-        uses: actions/upload-artifact@v3
+      - name: Set up gotestfmt
+        uses: gotesttools/gotestfmt-action@v2
         with:
-          name: Go-results-${{ matrix.go-version }}
-          path: TestResults-${{ matrix.go-version }}.json
+          # Optional: pass GITHUB_TOKEN to avoid rate limiting.
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test
+        run: go test -json 2>&1 | tee /tmp/gotest.log | gotestfmt
+      - name: Upload test log
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-log
+          path: /tmp/gotest.log
+          if-no-files-found: error

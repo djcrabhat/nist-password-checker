@@ -1,0 +1,15 @@
+{
+  "name": "nist-password-checker",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.2",
+    "prettier": "3.2.2",
+    "semantic-release": "^22.0.12",
+    "semantic-release-gitmoji": "^1.6.5"
+  }
+}

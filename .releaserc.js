@@ -33,7 +33,7 @@ module.exports = {
       {
         assets: ["package.json", "package-lock.json", "CHANGELOG.md"],
         message: [
-          ":bookmark: v${nextRelease.version} [skip ci]",
+          ":bookmark: v${nextRelease.version}",
           "",
           "https://github.com/djcrabhat/nist-password-checker/releases/tag/${nextRelease.gitTag}",
         ].join("\n"),

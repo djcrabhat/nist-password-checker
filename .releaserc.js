@@ -5,6 +5,7 @@ const tplFile = path.resolve(__dirname, ".github/release-notes.hbs");
 
 module.exports = {
   branches: ["main"],
+  tagFormat: "${version}",
   plugins: [
     [
       "semantic-release-gitmoji",

@@ -39,12 +39,11 @@ module.exports = {
         ].join("\n"),
       },
     ],
-    [
-      "@semantic-release/exec",
-      {
-        publishCmd: "echo > release-notes.md  \"${nextRelease.notes}\" && goreleaser release --release-notes release-notes.md --clean"
-        //publishCmd: "echo \"${nextRelease.notes}\" > release-notes.md && goreleaser release --release-notes release-notes.md --clean"
-      },
-    ],
+    // [
+    //   "@semantic-release/exec",
+    //   {
+    //     publishCmd: "goreleaser release --clean"
+    //   },
+    // ],
   ],
 };

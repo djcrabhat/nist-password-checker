@@ -1,6 +1,6 @@
 {
   "name": "nist-password-checker",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

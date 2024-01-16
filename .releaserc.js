@@ -31,6 +31,7 @@ module.exports = {
     [
       "@semantic-release/git",
       {
+        assets: ["package.json"],
         message: [
           ":bookmark: v${nextRelease.version} [skip ci]",
           "",

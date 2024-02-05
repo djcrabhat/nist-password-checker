@@ -7,7 +7,7 @@ require (
 	github.com/gin-contrib/logger v0.3.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/mavjs/goPwned v0.0.2
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 )

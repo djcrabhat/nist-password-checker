@@ -30,7 +30,7 @@ jobs:
           cache-dependency-path: go.sum
       - name: Run GoReleaser
         if: startsWith(github.ref, 'refs/tags/')
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest

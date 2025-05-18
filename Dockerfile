@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.23.5-bookworm
+FROM golang:1.24.3-bookworm
 
 # Set destination for COPY
 WORKDIR /app

@@ -30,3 +30,67 @@ paths:
                 example: ok
         '500':
           description: Service is not ready yet
+  /password/plaintext:
+    post:
+      tags:
+        - password
+      summary: Validate a plaintext password
+      operationId: passwordPlaintext
+      requestBody:
+        description: Password to validate
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Password validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordDecisionResponse'
+        '400':
+          description: Invalid request
+  /password/sha1:
+    post:
+      tags:
+        - password
+      summary: Validate a SHA1 hashed password
+      operationId: passwordSha1
+      requestBody:
+        description: Hash to validate
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hash:
+                  type: string
+                  example: "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8"
+      responses:
+        '200':
+          description: Password validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordDecisionResponse'
+        '400':
+          description: Invalid request
+components:
+  schemas:
+    PasswordDecisionResponse:
+      type: object
+      properties:
+        acceptable:
+          type: boolean
+          example: false
+        reason:
+          type: string
+          example: "password too short"
+        error:
+          type: string
+          example: "Failed to consult compromise database, unable to issue result, please try again"

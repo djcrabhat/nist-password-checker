@@ -2,7 +2,7 @@ module simple-password-checker
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.26.3
 
 require (
 	github.com/bitly/go-simplejson v0.5.1

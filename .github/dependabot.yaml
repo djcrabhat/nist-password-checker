@@ -7,19 +7,24 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    prefix: ":construction_worker:"
+    commit-message:
+      prefix: ":construction_worker:"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"      
-    prefix: ":arrow_up:"
+    commit-message:
+      prefix: ":arrow_up:"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "weekly"            
-    prefix: ":arrow_up:"
+    commit-message:
+      prefix: ":arrow_up:"
     open-pull-requests-limit: 10
   - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
-    prefix: ":construction_worker:"
+    commit-message:
+      prefix: ":construction_worker:"

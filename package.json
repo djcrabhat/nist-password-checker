@@ -10,6 +10,6 @@
     "@semantic-release/npm": "^11.0.2",
     "prettier": "3.8.3",
     "semantic-release": "^22.0.12",
-    "semantic-release-gitmoji": "^1.6.5"
+    "semantic-release-gitmoji": "^1.6.9"
   }
 }
